@@ -42,7 +42,7 @@ class _MainNavigationState extends State<MainNavigation> {
     final screens = [
       HomeScreen(favoritesManager: _favoritesManager),
       const FinderScreen(),
-      const SuggestionsScreen(),
+      SuggestionsScreen(favoritesManager: _favoritesManager),
       ProfileScreen(favoritesManager: _favoritesManager),
     ];
     return Scaffold(

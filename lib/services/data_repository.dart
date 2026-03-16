@@ -43,4 +43,32 @@ class DataRepository {
       return []; // Return empty list on error
     }
   }
+
+  static const String _lattafaKey = 'cached_lattafa_data';
+
+  Future<List<Parfum>> getLattafaSuggestions() async {
+    final prefs = await SharedPreferences.getInstance();
+    final String? cachedData = prefs.getString(_lattafaKey);
+
+    if (cachedData != null) {
+      final List<dynamic> decoded = json.decode(cachedData);
+      return decoded.map((item) => Parfum.fromJson(item)).toList();
+    }
+
+    try {
+      final apiResponse = await _apiService.searchFragrances("Lattafa");
+
+      final lattafaOnly = apiResponse
+          .where((item) => item['Brand'] == 'Lattafa')
+          .take(10)
+          .toList();
+
+      await prefs.setString(_lattafaKey, json.encode(lattafaOnly));
+
+      return lattafaOnly.map((item) => Parfum.fromJson(item)).toList();
+    } catch (e) {
+      print("Error fetching Lattafa suggestions: $e");
+      return [];
+    }
+  }
 }
