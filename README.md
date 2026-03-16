@@ -1,17 +1,19 @@
-# flutter_vizsgaprojekt
+# Fragram – Találd meg a tökéletes illatot!
 
-A new Flutter project.
+A **Fragram** egy Flutter alapú mobilalkalmazás, amely segít eligazodni a parfümök világában. Az applikáció célja, hogy a felhasználók egyszerűen és gyorsan megtalálják a stílusukhoz, személyiségükhöz vagy az alkalomhoz leginkább illő parfümöt.
 
-## Getting Started
+## 🚀 Funkciók
+* **Személyre szabott keresés:** Találd meg a hozzád illő illatjegyeket.
+* **Parfüm adatbázis:** Böngéssz a népszerű és niche illatok között.
+* **Kategóriák:** Szűrés évszakok, napszakok vagy intenzitás alapján.
+* **Modern UI:** Letisztult, könnyen kezelhető felület a legjobb felhasználói élményért.
 
-This project is a starting point for a Flutter application.
+## 🛠 Technológia
+* **Framework:** Flutter
+* **Nyelv:** Dart
+* **Platform:** Android
+* **API:** Fragella
+* **Server:** Firebase
 
-A few resources to get you started if this is your first Flutter project:
-
-- [Learn Flutter](https://docs.flutter.dev/get-started/learn-flutter)
-- [Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Flutter learning resources](https://docs.flutter.dev/reference/learning-resources)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+---
+*Ez a projekt egy vizsgamunka keretében valósul meg.*
