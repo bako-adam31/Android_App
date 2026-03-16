@@ -6,9 +6,10 @@ import 'firebase_options.dart';
 
 import 'screens/welcome_screen.dart';
 import 'screens/home_screen.dart';
+import 'screens/main_navigation.dart';
 
 void main() async {
-  // Ensure Flutter bindings are initialized before calling Firebase
+  //initialized before calling Firebase
   WidgetsFlutterBinding.ensureInitialized();
 
   await Firebase.initializeApp(
@@ -28,15 +29,15 @@ class SharqiApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      // The StreamBuilder listens for login/logout events automatically
+      //login/logout events automatically
       home: StreamBuilder<User?>(
         stream: FirebaseAuth.instance.authStateChanges(),
         builder: (context, snapshot) {
-          // If we have user data, they are logged in.
+          // If user data - login
           if (snapshot.hasData) {
-            return const HomeScreen();
+            return const MainNavigation();
           }
-          // Otherwise, show the Welcome screen.
+          //if not - Welcome screen.
           return const WelcomeScreen();
         },
       ),
