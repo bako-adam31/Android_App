@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "571006113449",
+    "project_id": "fragram-1441b",
+    "storage_bucket": "fragram-1441b.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:571006113449:android:0f886190fe98b9ba8d3bb8",
+        "android_client_info": {
+          "package_name": "com.example.flutter_vizsgaprojekt"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCuhzcYtM43qfQorSyX5rNkQEOr8ERZTTQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
