@@ -119,6 +119,7 @@ class PerfumeCard extends StatelessWidget {
           ),
 
 
+
           Expanded(
             flex: 2,
             child: Padding(
