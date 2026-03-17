@@ -142,4 +142,74 @@ class DataRepository {
       'selectedNotes': selectedNotes,
     });
   }
+
+  Future<List<Parfum>> getCategorySuggestions(String categoryId) async {
+    final prefs = await SharedPreferences.getInstance();
+    final cacheKey = 'cached_category_$categoryId';
+
+    // 1. Check Local Cache (Fetch only once)
+    final cachedData = prefs.getString(cacheKey);
+    if (cachedData != null) {
+      final List<dynamic> decoded = json.decode(cachedData);
+      return decoded.map((item) => Parfum.fromJson(item)).toList();
+    }
+
+    // 2. Fetch from API if not cached
+    List<Parfum> results = [];
+    try {
+      if (categoryId == 'niche') {
+        final apiResponse = await _apiService.searchFragrances("Xerjoff");
+        results = apiResponse
+            .where((item) => item['Brand'] == 'Xerjoff')
+            .take(10)
+            .map((e) => Parfum.fromJson(e))
+            .toList();
+
+      } else if (categoryId == 'designer') {
+        final apiResponse = await _apiService.searchFragrances("Dior");
+        results = apiResponse
+            .where((item) => item['Brand'] == 'Dior')
+            .take(10)
+            .map((e) => Parfum.fromJson(e))
+            .toList();
+
+      } else if (categoryId == 'gourmand') {
+        // Broad search, then filter locally by Main Accords
+        final apiResponse = await _apiService.searchFragrances("vanilla sweet");
+        final keywords = ['vanilla', 'gourmand', 'sweet'];
+        results = _filterByAccords(apiResponse, keywords, 10);
+
+      } else if (categoryId == 'citrusy') {
+        final apiResponse = await _apiService.searchFragrances("citrus fresh");
+        final keywords = ['citrus', 'fresh spicy', 'fresh'];
+        results = _filterByAccords(apiResponse, keywords, 10);
+      }
+
+      // 3. Save to Cache
+      if (results.isNotEmpty) {
+        await prefs.setString(cacheKey, json.encode(results.map((e) => e.toJson()).toList()));
+      }
+
+      return results;
+    } catch (e) {
+      print("Error fetching category $categoryId: $e");
+      return [];
+    }
+  }
+
+  // Helper to filter items based on Main Accords keywords
+  List<Parfum> _filterByAccords(List<dynamic> apiResponse, List<String> keywords, int limit) {
+    List<Parfum> matches = [];
+    for (var item in apiResponse) {
+      final accords = (item['Main Accords'] ?? '').toString().toLowerCase();
+      // Check if the perfume contains ANY of the required keywords
+      bool hasMatch = keywords.any((kw) => accords.contains(kw));
+
+      if (hasMatch) {
+        matches.add(Parfum.fromJson(item));
+        if (matches.length >= limit) break;
+      }
+    }
+    return matches;
+  }
 }

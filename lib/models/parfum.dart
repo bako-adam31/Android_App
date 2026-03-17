@@ -12,6 +12,7 @@ class Parfum {
   final String? topNotes;
   final String? middleNotes;
   final String? baseNotes;
+  final String? mainAccords;
 
 
   Parfum({
@@ -28,6 +29,7 @@ class Parfum {
     this.topNotes,
     this.middleNotes,
     this.baseNotes,
+    this.mainAccords,
   });
 
   factory Parfum.fromJson(Map<String, dynamic> json) {
@@ -45,6 +47,7 @@ class Parfum {
       topNotes: json['Top Notes'],
       middleNotes: json['Middle Notes'],
       baseNotes: json['Base Notes'],
+      mainAccords: json['Main Accords'],
     );
   }
 
@@ -63,6 +66,8 @@ class Parfum {
       'Top notes': topNotes,
       'Middle notes': middleNotes,
       'Base notes': baseNotes,
+      'Main Accords': mainAccords,
+
     };
   }
 }
