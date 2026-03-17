@@ -1,24 +1,23 @@
 import 'package:firebase_auth/firebase_auth.dart';
 
+
 class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
   // Sign Up with Email, Password, and Username
   Future<User?> signUp(String email, String password, String username) async {
-    try {
-      UserCredential credential = await _auth.createUserWithEmailAndPassword(
-        email: email,
-        password: password,
-      );
+    final credential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
+      email: email,
+      password: password,
+    );
 
-      // Save the username to the Firebase user profile
-      await credential.user?.updateDisplayName(username);
+    final user = credential.user;
+    await user?.updateDisplayName(username);
 
-      return credential.user;
-    } on FirebaseAuthException catch (e) {
-      print("Sign Up Error: ${e.message}");
-      return null;
-    }
+    final token = await user?.getIdToken();
+    print('FIREBASE TOKEN (signup): $token');
+
+    return user;
   }
 
   // Log In

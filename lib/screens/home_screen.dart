@@ -122,18 +122,18 @@ class PerfumeCard extends StatelessWidget {
             child: Stack (
               children: [
                 ClipRRect(
-                borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
-                child: SizedBox.expand(
-                  child: parfum.imageUrl != null && parfum.imageUrl!.isNotEmpty
-                      ? Image.network(
-                    parfum.imageUrl!,
-                    fit: BoxFit.cover,
-                    errorBuilder: (context, error, stackTrace) =>
-                    const Icon(Icons.water_drop, size: 50, color: Colors.grey),
-                  )
-                      : const Icon(Icons.water_drop, size: 50, color: Colors.grey),
+                  borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+                  child: SizedBox.expand(
+                    child: parfum.imageUrl != null && parfum.imageUrl!.isNotEmpty
+                        ? Image.network(
+                      parfum.imageUrl!,
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) =>
+                      const Icon(Icons.water_drop, size: 50, color: Colors.grey),
+                    )
+                        : const Icon(Icons.water_drop, size: 50, color: Colors.grey),
+                  ),
                 ),
-              ),
 
 
                 Positioned(
@@ -157,41 +157,41 @@ class PerfumeCard extends StatelessWidget {
                 ),
               ],
             ),
-      ),
+          ),
 
-              Expanded(
-                flex: 2,
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 8.0),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        parfum.name,
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 14,
-                        ),
-                        textAlign: TextAlign.center,
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        parfum.brand,
-                        style: const TextStyle(
-                          fontSize: 12,
-                          color: Colors.grey,
-                          fontStyle: FontStyle.italic,
-                        ),
-                        textAlign: TextAlign.center,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ],
+          Expanded(
+            flex: 2,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 8.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    parfum.name,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 14,
+                    ),
+                    textAlign: TextAlign.center,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
                   ),
-                ),
+                  const SizedBox(height: 4),
+                  Text(
+                    parfum.brand,
+                    style: const TextStyle(
+                      fontSize: 12,
+                      color: Colors.grey,
+                      fontStyle: FontStyle.italic,
+                    ),
+                    textAlign: TextAlign.center,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ],
               ),
+            ),
+          ),
         ],
       ),
     );

@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 
 class ApiService {
   // Your API Key from your Java code
-  static const String _apiKey = "5b3e64ce4e87eeff555f1316d3f14a7f505e99068eef6dea83ddf47520bcb56f";
+  static const String _apiKey = "90094fd0d03fb882b3876845661d04bb564017d93c2436bc12e2f828620aed40";
   static const String _baseUrl = "https://api.fragella.com/api/v1";
 
   static final Map<String, String> _headers = {
