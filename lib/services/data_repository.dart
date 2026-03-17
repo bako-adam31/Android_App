@@ -2,6 +2,35 @@ import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/parfum.dart';
 import 'api_service.dart';
+import 'package:flutter/foundation.dart';
+
+List<Parfum> _filterAndRankPerfumes(Map<String, dynamic> args) {
+  final List<dynamic> rawJsonList = args['perfumes'];
+  final Set<String> selectedNotes = args['selectedNotes'] as Set<String>;
+
+  final List<Parfum> allPerfumes = rawJsonList.map((e) => Parfum.fromJson(e)).toList();
+  final List<Map<String, dynamic>> scoredPerfumes = [];
+
+  for (var parfum in allPerfumes) {
+    int score = 0;
+    // Combine all notes into a single lowercase searchable string
+    final combinedNotes = "${parfum.topNotes ?? ''} ${parfum.middleNotes ?? ''} ${parfum.baseNotes ?? ''}".toLowerCase();
+
+    for (var note in selectedNotes) {
+      if (combinedNotes.contains(note.toLowerCase())) {
+        score++;
+      }
+    }
+
+    if (score > 0) {
+      scoredPerfumes.add({'parfum': parfum, 'score': score});
+    }
+  }
+
+  // Sort by highest score first
+  scoredPerfumes.sort((a, b) => (b['score'] as int).compareTo(a['score'] as int));
+  return scoredPerfumes.map((e) => e['parfum'] as Parfum).toList();
+}
 
 class DataRepository {
   final ApiService _apiService = ApiService();
@@ -70,5 +99,47 @@ class DataRepository {
       print("Error fetching Lattafa suggestions: $e");
       return [];
     }
+  }
+
+  static const String _finderCacheKey = 'cached_finder_brands';
+  final List<String> _allowedBrands = [
+    "French Avenue", "Afnan", "Armaf",
+    "Lattafa", "Fragrance World", "Maison Alhambra"
+  ];
+
+  Future<List<Parfum>> getFinderResults(Set<String> selectedNotes) async {
+    final prefs = await SharedPreferences.getInstance();
+    final cachedData = prefs.getString(_finderCacheKey);
+    List<dynamic> allPerfumesJson = [];
+
+    if (cachedData != null) {
+      allPerfumesJson = json.decode(cachedData);
+    } else {
+      // 1. Parallel fetching using Future.wait
+      try {
+        final List<Future<List<dynamic>>> requests = _allowedBrands
+            .map((brand) => _apiService.getFragrancesByBrand(brand))
+            .toList();
+
+        final results = await Future.wait(requests);
+
+        // 2. Combine results
+        for (var brandResults in results) {
+          allPerfumesJson.addAll(brandResults);
+        }
+
+        // 3. Cache the combined list
+        await prefs.setString(_finderCacheKey, json.encode(allPerfumesJson));
+      } catch (e) {
+        print("Error fetching finder brands: $e");
+        return [];
+      }
+    }
+
+    // 4. Offload heavy matching/ranking logic to a background Isolate
+    return await compute(_filterAndRankPerfumes, {
+      'perfumes': allPerfumesJson,
+      'selectedNotes': selectedNotes,
+    });
   }
 }

@@ -9,6 +9,10 @@ class Parfum {
   final String? oilType;
   final String? longevity;
   final String? sillage;
+  final String? topNotes;
+  final String? middleNotes;
+  final String? baseNotes;
+
 
   Parfum({
     required this.name,
@@ -21,6 +25,9 @@ class Parfum {
     this.oilType,
     this.longevity,
     this.sillage,
+    this.topNotes,
+    this.middleNotes,
+    this.baseNotes,
   });
 
   factory Parfum.fromJson(Map<String, dynamic> json) {
@@ -35,9 +42,11 @@ class Parfum {
       oilType: json['OilType'],
       longevity: json['Longevity'],
       sillage: json['Sillage'],
+      topNotes: json['Top Notes'],
+      middleNotes: json['Middle Notes'],
+      baseNotes: json['Base Notes'],
     );
   }
-
 
   Map<String, dynamic> toJson() {
     return {
@@ -51,6 +60,9 @@ class Parfum {
       'OilType': oilType,
       'Longevity': longevity,
       'Sillage': sillage,
+      'Top notes': topNotes,
+      'Middle notes': middleNotes,
+      'Base notes': baseNotes,
     };
   }
 }

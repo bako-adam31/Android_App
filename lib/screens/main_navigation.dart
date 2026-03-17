@@ -41,7 +41,7 @@ class _MainNavigationState extends State<MainNavigation> {
   Widget build(BuildContext context) {
     final screens = [
       HomeScreen(favoritesManager: _favoritesManager),
-      const FinderScreen(),
+      FinderScreen(favoritesManager: _favoritesManager),
       SuggestionsScreen(favoritesManager: _favoritesManager),
       ProfileScreen(favoritesManager: _favoritesManager),
     ];
