@@ -16,21 +16,20 @@ class FavoritesService {
 
   Future<void> addFavorite(Parfum parfum) async {
     final favorites = await getFavorites();
-    // Avoid duplicates by name + brand
-    if (favorites.any((f) => f.name == parfum.name && f.brand == parfum.brand)) return;
+    if (favorites.any((f) => f.stableKey == parfum.stableKey)) return;
     favorites.add(parfum);
     await _save(favorites);
   }
 
   Future<void> removeFavorite(Parfum parfum) async {
     final favorites = await getFavorites();
-    favorites.removeWhere((f) => f.name == parfum.name && f.brand == parfum.brand);
+    favorites.removeWhere((f) => f.stableKey == parfum.stableKey);
     await _save(favorites);
   }
 
   Future<bool> isFavorite(Parfum parfum) async {
     final favorites = await getFavorites();
-    return favorites.any((f) => f.name == parfum.name && f.brand == parfum.brand);
+    return favorites.any((f) => f.stableKey == parfum.stableKey);
   }
 
   Future<void> _save(List<Parfum> favorites) async {

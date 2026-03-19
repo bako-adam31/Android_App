@@ -14,7 +14,7 @@ class FavoritesManager extends ChangeNotifier {
   }
 
   bool isFavorite(Parfum parfum) {
-    return _favorites.any((f) => f.name == parfum.name && f.brand == parfum.brand);
+    return _favorites.any((f) => f.stableKey == parfum.stableKey);
   }
 
   Future<void> toggle(Parfum parfum) async {
@@ -23,7 +23,7 @@ class FavoritesManager extends ChangeNotifier {
     } else {
       await _service.addFavorite(parfum);
     }
-    await load(); // reload & notify all listeners
+    await load();
   }
 
   Future<void> remove(Parfum parfum) async {

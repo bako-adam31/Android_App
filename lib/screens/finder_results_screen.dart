@@ -93,9 +93,10 @@ class _FinderResultsScreenState extends State<FinderResultsScreen> {
 
                   return GestureDetector(
                     onTap: () => PerfumeDetailSheet.show(context, parfum),
-                    child: PerfumeCard(
+                    child: FinderPerfumeCard(
                       parfum: parfum,
                       isFavorite: isFav,
+                      onTap: () => PerfumeDetailSheet.show(context, parfum),
                       onFavoriteToggle: () => widget.favoritesManager.toggle(parfum),
                     ),
                   );
@@ -104,6 +105,110 @@ class _FinderResultsScreenState extends State<FinderResultsScreen> {
             },
           );
         },
+      ),
+    );
+  }
+}
+class FinderPerfumeCard extends StatelessWidget {
+  final dynamic parfum;
+  final bool isFavorite;
+  final VoidCallback? onTap;
+  final VoidCallback? onFavoriteToggle;
+
+  const FinderPerfumeCard({
+    super.key,
+    required this.parfum,
+    required this.isFavorite,
+    this.onTap,
+    this.onFavoriteToggle,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(18),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.05),
+              blurRadius: 10,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Expanded(
+              child: Stack(
+                children: [
+                  ClipRRect(
+                    borderRadius:
+                    const BorderRadius.vertical(top: Radius.circular(18)),
+                    child: SizedBox.expand(
+                      child: parfum.imageUrl != null &&
+                          parfum.imageUrl.toString().isNotEmpty
+                          ? Image.network(
+                        parfum.imageUrl,
+                        fit: BoxFit.cover,
+                        errorBuilder: (_, __, ___) => const Center(
+                          child: Icon(Icons.image_not_supported),
+                        ),
+                      )
+                          : const Center(
+                        child: Icon(Icons.image_not_supported),
+                      ),
+                    ),
+                  ),
+                  Positioned(
+                    top: 8,
+                    right: 8,
+                    child: GestureDetector(
+                      onTap: onFavoriteToggle,
+                      child: Container(
+                        padding: const EdgeInsets.all(6),
+                        decoration: BoxDecoration(
+                          color: Colors.white.withOpacity(0.9),
+                          shape: BoxShape.circle,
+                        ),
+                        child: Icon(
+                          isFavorite ? Icons.favorite : Icons.favorite_border,
+                          color: isFavorite ? Colors.red : Colors.grey,
+                          size: 20,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(10),
+              child: Column(
+                children: [
+                  Text(
+                    parfum.name ?? '',
+                    textAlign: TextAlign.center,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    parfum.brand ?? '',
+                    style: const TextStyle(color: Colors.grey),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    textAlign: TextAlign.center,
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
