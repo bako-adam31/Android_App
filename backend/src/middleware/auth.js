@@ -31,7 +31,8 @@ const authMiddleware = async (req, res, next) => {
         const decodedToken = await admin.auth().verifyIdToken(idToken);
 
         req.user = {
-            uid: decodedToken.uid
+            uid: decodedToken.uid,
+            email: decodedToken.email || null
         };
 
         next();

@@ -96,12 +96,12 @@ class Parfum {
           _parseSimple(json['id']) ??
           _parseSimple(json['_id']) ??
           _parseSimple(json['ID']),
-      name: (json['Name'] ?? 'Unknown Name').toString(),
-      brand: (json['Brand'] ?? 'Unknown Brand').toString(),
-      imageUrl: _parseSimple(json['Image URL']),
-      gender: _parseSimple(json['Gender']),
-      rating: _parseSimple(json['rating']),
-      year: _parseSimple(json['Year']),
+      name: (json['Name'] ?? json['name'] ?? 'Unknown Name').toString(),
+      brand: (json['Brand'] ?? json['brand'] ?? 'Unknown Brand').toString(),
+      imageUrl: _parseSimple(json['Image URL'] ?? json['imageUrl']),
+      gender: _parseSimple(json['Gender'] ?? json['gender']),
+      rating: _parseSimple(json['rating'] ?? json['Rating']),
+      year: _parseSimple(json['Year'] ?? json['year']),
       price: _parseSimple(json['Price']),
       oilType: _parseSimple(json['OilType']),
       longevity: _parseSimple(json['Longevity']),
@@ -115,7 +115,7 @@ class Parfum {
       baseNotes:
           _parseNotesArray(notesMap['Base']) ??
           _parseSimple(json['Base Notes']),
-      mainAccords: _parseSimple(json['Main Accords']),
+      mainAccords: _parseSimple(json['Main Accords'] ?? json['mainAccords']),
     );
   }
 

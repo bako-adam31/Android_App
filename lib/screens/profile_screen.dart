@@ -8,8 +8,9 @@ import '../models/parfum.dart';
 import '../models/profile_details.dart';
 import '../services/api_service.dart';
 import '../services/auth_service.dart';
+import '../services/backend_api_service.dart';
 import '../services/favorites_manager.dart';
-import '../services/profile_preferences_service.dart';
+import '../services/profile_repository.dart';
 
 class ProfileScreen extends StatefulWidget {
   final FavoritesManager favoritesManager;
@@ -25,7 +26,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   final AuthService _authService = AuthService();
   final ApiService _apiService = ApiService();
-  final ProfilePreferencesService _profileService = ProfilePreferencesService();
+  final ProfileRepository _profileRepository = ProfileRepository();
   final TextEditingController _bioController = TextEditingController();
   final TextEditingController _signatureSearchController =
       TextEditingController();
@@ -68,7 +69,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     }
 
     try {
-      final profile = await _profileService.getProfile(user.uid);
+      final profile = await _profileRepository.getMyProfile();
       if (!mounted) return;
 
       setState(() {
@@ -77,11 +78,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
         _isProfileLoading = false;
         _profileErrorMessage = null;
       });
-    } catch (_) {
+    } catch (error) {
       if (!mounted) return;
       setState(() {
         _isProfileLoading = false;
-        _profileErrorMessage = 'Could not load your profile details.';
+        _profileErrorMessage = _extractProfileErrorMessage(
+          error,
+          'Could not load your profile details.',
+        );
       });
     }
   }
@@ -134,10 +138,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
 
     try {
-      final savedProfile = await _profileService.saveProfile(
-        user.uid,
-        nextProfile,
-      );
+      final savedProfile = await _profileRepository.saveMyProfile(nextProfile);
       if (!mounted) return;
 
       setState(() {
@@ -150,11 +151,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Profile updated successfully.')),
       );
-    } catch (_) {
+    } catch (error) {
       if (!mounted) return;
       setState(() {
         _isSavingProfile = false;
-        _profileErrorMessage = 'Could not save your profile right now.';
+        _profileErrorMessage = _extractProfileErrorMessage(
+          error,
+          'Could not save your profile right now.',
+        );
       });
     }
   }
@@ -229,6 +233,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
     setState(() {
       _selectedSignatureFragrance = null;
     });
+  }
+
+  String _extractProfileErrorMessage(Object error, String fallback) {
+    if (error is BackendApiException) {
+      final message = error.message.trim();
+      if (message.isNotEmpty) {
+        return message;
+      }
+    }
+
+    return fallback;
   }
 
   @override
