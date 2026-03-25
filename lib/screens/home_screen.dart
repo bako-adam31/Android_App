@@ -8,10 +8,7 @@ import 'suggestions_screen.dart';
 class HomeScreen extends StatefulWidget {
   final FavoritesManager favoritesManager;
 
-  const HomeScreen({
-    super.key,
-    required this.favoritesManager,
-  });
+  const HomeScreen({super.key, required this.favoritesManager});
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -38,9 +35,8 @@ class _HomeScreenState extends State<HomeScreen> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (_) => SuggestionsScreen(
-          favoritesManager: widget.favoritesManager,
-        ),
+        builder: (_) =>
+            SuggestionsScreen(favoritesManager: widget.favoritesManager),
       ),
     );
   }
@@ -48,10 +44,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Home'),
-        centerTitle: true,
-      ),
+      appBar: AppBar(title: const Text('Home'), centerTitle: true),
       body: Column(
         children: [
           Expanded(
@@ -64,7 +57,10 @@ class _HomeScreenState extends State<HomeScreen> {
                     children: [
                       const Text(
                         'Suggestions',
-                        style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                        style: TextStyle(
+                          fontSize: 22,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                       const Spacer(),
                       TextButton(
@@ -78,12 +74,13 @@ class _HomeScreenState extends State<HomeScreen> {
                     child: GridView.builder(
                       physics: const NeverScrollableScrollPhysics(),
                       itemCount: categories.length,
-                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2,
-                        crossAxisSpacing: 12,
-                        mainAxisSpacing: 12,
-                        childAspectRatio: 1.7,
-                      ),
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2,
+                            crossAxisSpacing: 12,
+                            mainAxisSpacing: 12,
+                            childAspectRatio: 1.7,
+                          ),
                       itemBuilder: (context, index) {
                         final item = categories[index];
                         return GestureDetector(
@@ -94,7 +91,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               borderRadius: BorderRadius.circular(18),
                               boxShadow: [
                                 BoxShadow(
-                                  color: Colors.black.withOpacity(0.05),
+                                  color: Colors.black.withValues(alpha: 0.05),
                                   blurRadius: 10,
                                   offset: const Offset(0, 4),
                                 ),
@@ -104,7 +101,10 @@ class _HomeScreenState extends State<HomeScreen> {
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  Text(item['icon']!, style: const TextStyle(fontSize: 28)),
+                                  Text(
+                                    item['icon']!,
+                                    style: const TextStyle(fontSize: 28),
+                                  ),
                                   const SizedBox(height: 8),
                                   Text(
                                     item['title']!,
@@ -140,8 +140,11 @@ class _HomeScreenState extends State<HomeScreen> {
                     child: FutureBuilder<List<Parfum>>(
                       future: _tomFordFuture,
                       builder: (context, snapshot) {
-                        if (snapshot.connectionState == ConnectionState.waiting) {
-                          return const Center(child: CircularProgressIndicator());
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return const Center(
+                            child: CircularProgressIndicator(),
+                          );
                         }
 
                         if (snapshot.hasError) {
@@ -160,24 +163,28 @@ class _HomeScreenState extends State<HomeScreen> {
 
                         return GridView.builder(
                           itemCount: perfumes.length,
-                          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 2,
-                            crossAxisSpacing: 12,
-                            mainAxisSpacing: 12,
-                            childAspectRatio: 0.68,
-                          ),
+                          gridDelegate:
+                              const SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: 2,
+                                crossAxisSpacing: 12,
+                                mainAxisSpacing: 12,
+                                childAspectRatio: 0.68,
+                              ),
                           itemBuilder: (context, index) {
                             final parfum = perfumes[index];
 
                             return GestureDetector(
-                              onTap: () => PerfumeDetailSheet.show(context, parfum),
+                              onTap: () =>
+                                  PerfumeDetailSheet.show(context, parfum),
                               child: Container(
                                 decoration: BoxDecoration(
                                   color: Colors.white,
                                   borderRadius: BorderRadius.circular(18),
                                   boxShadow: [
                                     BoxShadow(
-                                      color: Colors.black.withOpacity(0.05),
+                                      color: Colors.black.withValues(
+                                        alpha: 0.05,
+                                      ),
                                       blurRadius: 10,
                                       offset: const Offset(0, 4),
                                     ),
@@ -187,19 +194,29 @@ class _HomeScreenState extends State<HomeScreen> {
                                   children: [
                                     Expanded(
                                       child: ClipRRect(
-                                        borderRadius: const BorderRadius.vertical(
-                                          top: Radius.circular(18),
-                                        ),
-                                        child: parfum.imageUrl != null &&
-                                            parfum.imageUrl!.isNotEmpty
+                                        borderRadius:
+                                            const BorderRadius.vertical(
+                                              top: Radius.circular(18),
+                                            ),
+                                        child:
+                                            parfum.imageUrl != null &&
+                                                parfum.imageUrl!.isNotEmpty
                                             ? Image.network(
-                                          parfum.imageUrl!,
-                                          width: double.infinity,
-                                          fit: BoxFit.cover,
-                                          errorBuilder: (_, __, ___) =>
-                                          const Icon(Icons.image_not_supported),
-                                        )
-                                            : const Icon(Icons.image_not_supported),
+                                                parfum.imageUrl!,
+                                                width: double.infinity,
+                                                fit: BoxFit.cover,
+                                                errorBuilder:
+                                                    (
+                                                      context,
+                                                      error,
+                                                      stackTrace,
+                                                    ) => const Icon(
+                                                      Icons.image_not_supported,
+                                                    ),
+                                              )
+                                            : const Icon(
+                                                Icons.image_not_supported,
+                                              ),
                                       ),
                                     ),
                                     Padding(
@@ -218,7 +235,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                           const SizedBox(height: 4),
                                           Text(
                                             parfum.brand,
-                                            style: const TextStyle(color: Colors.grey),
+                                            style: const TextStyle(
+                                              color: Colors.grey,
+                                            ),
                                           ),
                                         ],
                                       ),

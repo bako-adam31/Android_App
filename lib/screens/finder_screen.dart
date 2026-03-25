@@ -5,7 +5,7 @@ import 'finder_results_screen.dart';
 class FinderScreen extends StatefulWidget {
   final FavoritesManager favoritesManager;
 
-  const FinderScreen({Key? key, required this.favoritesManager}) : super(key: key);
+  const FinderScreen({super.key, required this.favoritesManager});
 
   @override
   State<FinderScreen> createState() => _FinderScreenState();
@@ -17,12 +17,51 @@ class _FinderScreenState extends State<FinderScreen> {
   final Set<String> _selectedNotes = {};
 
   final List<Map<String, dynamic>> _wizardSteps = [
-    {'title': 'Citrus Notes', 'notes': ['Lemon', 'Orange', 'Grapefruit', 'Yuzu', 'Lime', 'Bergamot']},
-    {'title': 'Fruity Notes', 'notes': ['Raspberry', 'Cherry', 'Pineapple', 'Blackcurrant', 'Fig', 'Pear']},
-    {'title': 'Oriental Notes', 'notes': ['Tobacco', 'Vanilla', 'Saffron', 'Cardamom', 'Pepper', 'Cinnamon']},
-    {'title': 'Woody Notes', 'notes': ['Lavender', 'Vetiver', 'Patchouli', 'Sandalwood', 'Leather', 'Oak Moss']},
-    {'title': 'Fresh Notes', 'notes': ['Rosemary', 'Sage', 'Mint', 'Green Tea', 'Salt', 'Sea']},
-    {'title': 'Sweet Notes', 'notes': ['Caramel', 'Honey', 'Praline', 'Nutmeg', 'Chocolate', 'Cacao']},
+    {
+      'title': 'Citrus Notes',
+      'notes': ['Lemon', 'Orange', 'Grapefruit', 'Yuzu', 'Lime', 'Bergamot'],
+    },
+    {
+      'title': 'Fruity Notes',
+      'notes': [
+        'Raspberry',
+        'Cherry',
+        'Pineapple',
+        'Blackcurrant',
+        'Fig',
+        'Pear',
+      ],
+    },
+    {
+      'title': 'Oriental Notes',
+      'notes': [
+        'Tobacco',
+        'Vanilla',
+        'Saffron',
+        'Cardamom',
+        'Pepper',
+        'Cinnamon',
+      ],
+    },
+    {
+      'title': 'Woody Notes',
+      'notes': [
+        'Lavender',
+        'Vetiver',
+        'Patchouli',
+        'Sandalwood',
+        'Leather',
+        'Oak Moss',
+      ],
+    },
+    {
+      'title': 'Fresh Notes',
+      'notes': ['Rosemary', 'Sage', 'Mint', 'Green Tea', 'Salt', 'Sea'],
+    },
+    {
+      'title': 'Sweet Notes',
+      'notes': ['Caramel', 'Honey', 'Praline', 'Nutmeg', 'Chocolate', 'Cacao'],
+    },
   ];
 
   void _toggleNote(String note) {
@@ -36,12 +75,18 @@ class _FinderScreenState extends State<FinderScreen> {
   }
 
   void _nextStep() {
-    final currentStepNotes = List<String>.from(_wizardSteps[_currentStep]['notes']);
-    final hasSelection = currentStepNotes.any((note) => _selectedNotes.contains(note));
+    final currentStepNotes = List<String>.from(
+      _wizardSteps[_currentStep]['notes'],
+    );
+    final hasSelection = currentStepNotes.any(
+      (note) => _selectedNotes.contains(note),
+    );
 
     if (!hasSelection) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please select at least one note to continue.')),
+        const SnackBar(
+          content: Text('Please select at least one note to continue.'),
+        ),
       );
       return;
     }
@@ -76,7 +121,10 @@ class _FinderScreenState extends State<FinderScreen> {
           // but visually required by specs.
           onPressed: () => Navigator.maybePop(context),
         ),
-        title: const Text('Pick your favorite notes', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+        title: const Text(
+          'Pick your favorite notes',
+          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+        ),
         backgroundColor: Colors.transparent,
         foregroundColor: Colors.black,
         elevation: 0,
@@ -95,7 +143,9 @@ class _FinderScreenState extends State<FinderScreen> {
                   width: _currentStep == index ? 24 : 8,
                   height: 8,
                   decoration: BoxDecoration(
-                    color: _currentStep == index ? Colors.black87 : Colors.grey[300],
+                    color: _currentStep == index
+                        ? Colors.black87
+                        : Colors.grey[300],
                     borderRadius: BorderRadius.circular(4),
                   ),
                 );
@@ -107,7 +157,8 @@ class _FinderScreenState extends State<FinderScreen> {
           Expanded(
             child: PageView.builder(
               controller: _pageController,
-              physics: const NeverScrollableScrollPhysics(), // Disable swipe to enforce selection
+              physics:
+                  const NeverScrollableScrollPhysics(), // Disable swipe to enforce selection
               onPageChanged: (index) => setState(() => _currentStep = index),
               itemCount: _wizardSteps.length,
               itemBuilder: (context, index) {
@@ -121,17 +172,21 @@ class _FinderScreenState extends State<FinderScreen> {
                     children: [
                       Text(
                         step['title'],
-                        style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                        style: const TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                       const SizedBox(height: 20),
                       Expanded(
                         child: GridView.builder(
-                          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 2,
-                            crossAxisSpacing: 12,
-                            mainAxisSpacing: 12,
-                            childAspectRatio: 2.5,
-                          ),
+                          gridDelegate:
+                              const SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: 2,
+                                crossAxisSpacing: 12,
+                                mainAxisSpacing: 12,
+                                childAspectRatio: 2.5,
+                              ),
                           itemCount: notes.length,
                           itemBuilder: (context, noteIndex) {
                             final note = notes[noteIndex];
@@ -142,22 +197,34 @@ class _FinderScreenState extends State<FinderScreen> {
                               child: AnimatedContainer(
                                 duration: const Duration(milliseconds: 200),
                                 decoration: BoxDecoration(
-                                  color: isSelected ? Colors.black87 : Colors.white,
+                                  color: isSelected
+                                      ? Colors.black87
+                                      : Colors.white,
                                   borderRadius: BorderRadius.circular(12),
                                   border: Border.all(
-                                    color: isSelected ? Colors.black87 : Colors.grey.shade300,
+                                    color: isSelected
+                                        ? Colors.black87
+                                        : Colors.grey.shade300,
                                   ),
                                   boxShadow: [
                                     if (isSelected)
-                                      BoxShadow(color: Colors.black12, blurRadius: 6, offset: const Offset(0, 3)),
+                                      BoxShadow(
+                                        color: Colors.black12,
+                                        blurRadius: 6,
+                                        offset: const Offset(0, 3),
+                                      ),
                                   ],
                                 ),
                                 alignment: Alignment.center,
                                 child: Text(
                                   note,
                                   style: TextStyle(
-                                    fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
-                                    color: isSelected ? Colors.white : Colors.black87,
+                                    fontWeight: isSelected
+                                        ? FontWeight.bold
+                                        : FontWeight.w500,
+                                    color: isSelected
+                                        ? Colors.white
+                                        : Colors.black87,
                                   ),
                                 ),
                               ),
@@ -182,12 +249,19 @@ class _FinderScreenState extends State<FinderScreen> {
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.black87,
                   foregroundColor: Colors.white,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16),
+                  ),
                 ),
                 onPressed: _nextStep,
                 child: Text(
-                  _currentStep == _wizardSteps.length - 1 ? 'Find Perfumes' : 'Next',
-                  style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  _currentStep == _wizardSteps.length - 1
+                      ? 'Find Perfumes'
+                      : 'Next',
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
             ),

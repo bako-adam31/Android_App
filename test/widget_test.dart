@@ -1,30 +1,39 @@
-// This is a basic Flutter widget test.
-//
-// To perform an interaction with a widget in your test, use the WidgetTester
-// utility in the flutter_test package. For example, you can send tap and scroll
-// gestures. You can also use WidgetTester to find child widgets in the widget
-// tree, read text, and verify that the values of widget properties are correct.
-
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:flutter_vizsgaprojekt/main.dart';
+import 'package:flutter_vizsgaprojekt/models/accord_category.dart';
+import 'package:flutter_vizsgaprojekt/models/parfum.dart';
+import 'package:flutter_vizsgaprojekt/models/profile_details.dart';
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(const MyApp());
+  test('AccordCategories.byId resolves ids, labels, and API accords', () {
+    expect(AccordCategories.byId('woody'), AccordCategories.woody);
+    expect(AccordCategories.byId('Warm Spicy'), AccordCategories.warmSpicy);
+    expect(AccordCategories.byId('warm spicy'), AccordCategories.warmSpicy);
+    expect(AccordCategories.byId('unknown'), isNull);
+  });
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
+  test('ProfileDetails serializes signature fragrance and favorite accord', () {
+    final profile = ProfileDetails(
+      bio: 'Collector of warm woody scents.',
+      gender: ProfileGender.female,
+      favoriteAccord: AccordCategories.amber,
+      signatureFragrance: Parfum(
+        id: 'oud-wood',
+        name: 'Oud Wood',
+        brand: 'Tom Ford',
+        mainAccords: 'Woody, Amber',
+      ),
+    );
 
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
+    final restored = ProfileDetails.fromJson(profile.toJson());
 
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+    expect(restored.bio, profile.bio);
+    expect(restored.gender, ProfileGender.female);
+    expect(restored.favoriteAccord, AccordCategories.amber);
+    expect(restored.signatureFragrance?.name, 'Oud Wood');
+    expect(
+      profile.toApiJson()['signatureFragrance'],
+      containsPair('brand', 'Tom Ford'),
+    );
   });
 }

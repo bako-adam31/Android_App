@@ -3,7 +3,7 @@ import 'login_screen.dart';
 import 'signup_screen.dart';
 
 class WelcomeScreen extends StatelessWidget {
-  const WelcomeScreen({Key? key}) : super(key: key);
+  const WelcomeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -40,7 +40,10 @@ class WelcomeScreen extends StatelessWidget {
                       foregroundColor: Colors.white,
                     ),
                     onPressed: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (_) => const LoginScreen()));
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) => const LoginScreen()),
+                      );
                     },
                     child: const Text('Log In', style: TextStyle(fontSize: 16)),
                   ),
@@ -57,9 +60,15 @@ class WelcomeScreen extends StatelessWidget {
                       side: const BorderSide(color: Colors.black87),
                     ),
                     onPressed: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (_) => const SignUpScreen()));
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) => const SignUpScreen()),
+                      );
                     },
-                    child: const Text('Sign Up', style: TextStyle(fontSize: 16)),
+                    child: const Text(
+                      'Sign Up',
+                      style: TextStyle(fontSize: 16),
+                    ),
                   ),
                 ),
               ],

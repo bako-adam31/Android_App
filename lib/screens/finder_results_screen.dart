@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import '../models/parfum.dart';
 import '../services/data_repository.dart';
 import '../services/favorites_manager.dart';
-import 'home_screen.dart'; // To reuse PerfumeCard
 import 'perfume_detail_sheet.dart';
 
 class FinderResultsScreen extends StatefulWidget {
@@ -10,10 +9,10 @@ class FinderResultsScreen extends StatefulWidget {
   final FavoritesManager favoritesManager;
 
   const FinderResultsScreen({
-    Key? key,
+    super.key,
     required this.selectedNotes,
     required this.favoritesManager,
-  }) : super(key: key);
+  });
 
   @override
   State<FinderResultsScreen> createState() => _FinderResultsScreenState();
@@ -34,7 +33,10 @@ class _FinderResultsScreenState extends State<FinderResultsScreen> {
     return Scaffold(
       backgroundColor: Colors.grey[50],
       appBar: AppBar(
-        title: const Text('Your Matches', style: TextStyle(fontWeight: FontWeight.bold)),
+        title: const Text(
+          'Your Matches',
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
         backgroundColor: Colors.transparent,
         foregroundColor: Colors.black,
         elevation: 0,
@@ -97,7 +99,8 @@ class _FinderResultsScreenState extends State<FinderResultsScreen> {
                       parfum: parfum,
                       isFavorite: isFav,
                       onTap: () => PerfumeDetailSheet.show(context, parfum),
-                      onFavoriteToggle: () => widget.favoritesManager.toggle(parfum),
+                      onFavoriteToggle: () =>
+                          widget.favoritesManager.toggle(parfum),
                     ),
                   );
                 },
@@ -109,8 +112,9 @@ class _FinderResultsScreenState extends State<FinderResultsScreen> {
     );
   }
 }
+
 class FinderPerfumeCard extends StatelessWidget {
-  final dynamic parfum;
+  final Parfum parfum;
   final bool isFavorite;
   final VoidCallback? onTap;
   final VoidCallback? onFavoriteToggle;
@@ -133,7 +137,7 @@ class FinderPerfumeCard extends StatelessWidget {
           borderRadius: BorderRadius.circular(18),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.05),
+              color: Colors.black.withValues(alpha: 0.05),
               blurRadius: 10,
               offset: const Offset(0, 4),
             ),
@@ -146,21 +150,24 @@ class FinderPerfumeCard extends StatelessWidget {
               child: Stack(
                 children: [
                   ClipRRect(
-                    borderRadius:
-                    const BorderRadius.vertical(top: Radius.circular(18)),
+                    borderRadius: const BorderRadius.vertical(
+                      top: Radius.circular(18),
+                    ),
                     child: SizedBox.expand(
-                      child: parfum.imageUrl != null &&
-                          parfum.imageUrl.toString().isNotEmpty
+                      child:
+                          parfum.imageUrl != null &&
+                              parfum.imageUrl.toString().isNotEmpty
                           ? Image.network(
-                        parfum.imageUrl,
-                        fit: BoxFit.cover,
-                        errorBuilder: (_, __, ___) => const Center(
-                          child: Icon(Icons.image_not_supported),
-                        ),
-                      )
+                              parfum.imageUrl!,
+                              fit: BoxFit.cover,
+                              errorBuilder: (context, error, stackTrace) =>
+                                  const Center(
+                                    child: Icon(Icons.image_not_supported),
+                                  ),
+                            )
                           : const Center(
-                        child: Icon(Icons.image_not_supported),
-                      ),
+                              child: Icon(Icons.image_not_supported),
+                            ),
                     ),
                   ),
                   Positioned(
@@ -171,7 +178,7 @@ class FinderPerfumeCard extends StatelessWidget {
                       child: Container(
                         padding: const EdgeInsets.all(6),
                         decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.9),
+                          color: Colors.white.withValues(alpha: 0.9),
                           shape: BoxShape.circle,
                         ),
                         child: Icon(
@@ -190,7 +197,7 @@ class FinderPerfumeCard extends StatelessWidget {
               child: Column(
                 children: [
                   Text(
-                    parfum.name ?? '',
+                    parfum.name,
                     textAlign: TextAlign.center,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
@@ -198,7 +205,7 @@ class FinderPerfumeCard extends StatelessWidget {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    parfum.brand ?? '',
+                    parfum.brand,
                     style: const TextStyle(color: Colors.grey),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,

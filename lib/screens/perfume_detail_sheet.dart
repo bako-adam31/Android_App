@@ -4,7 +4,7 @@ import '../models/parfum.dart';
 class PerfumeDetailSheet extends StatelessWidget {
   final Parfum parfum;
 
-  const PerfumeDetailSheet({Key? key, required this.parfum}) : super(key: key);
+  const PerfumeDetailSheet({super.key, required this.parfum});
 
   static void show(BuildContext context, Parfum parfum) {
     showModalBottomSheet(
@@ -53,10 +53,15 @@ class PerfumeDetailSheet extends StatelessWidget {
                     height: 260,
                     width: double.infinity,
                     fit: BoxFit.cover,
-                    errorBuilder: (_, __, ___) => const SizedBox(
-                      height: 260,
-                      child: Icon(Icons.water_drop, size: 64, color: Colors.grey),
-                    ),
+                    errorBuilder: (context, error, stackTrace) =>
+                        const SizedBox(
+                          height: 260,
+                          child: Icon(
+                            Icons.water_drop,
+                            size: 64,
+                            color: Colors.grey,
+                          ),
+                        ),
                   ),
                 ),
 
@@ -65,7 +70,10 @@ class PerfumeDetailSheet extends StatelessWidget {
               // Name & brand
               Text(
                 parfum.name,
-                style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                style: const TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
               const SizedBox(height: 4),
               Text(
@@ -90,13 +98,24 @@ class PerfumeDetailSheet extends StatelessWidget {
 
   Widget _buildDetailGrid() {
     final details = <_DetailItem>[
-      if (parfum.year != null) _DetailItem(Icons.calendar_today, 'Release Year', parfum.year!),
-      if (parfum.rating != null) _DetailItem(Icons.star_outline, 'Rating', parfum.rating!),
-      if (parfum.gender != null) _DetailItem(Icons.person_outline, 'Gender', _capitalize(parfum.gender!)),
-      if (parfum.price != null) _DetailItem(Icons.attach_money, 'Price', '\$${parfum.price}'),
-      if (parfum.oilType != null) _DetailItem(Icons.water_drop_outlined, 'Oil Type', parfum.oilType!),
-      if (parfum.longevity != null) _DetailItem(Icons.timelapse, 'Longevity', parfum.longevity!),
-      if (parfum.sillage != null) _DetailItem(Icons.air, 'Sillage', parfum.sillage!),
+      if (parfum.year != null)
+        _DetailItem(Icons.calendar_today, 'Release Year', parfum.year!),
+      if (parfum.rating != null)
+        _DetailItem(Icons.star_outline, 'Rating', parfum.rating!),
+      if (parfum.gender != null)
+        _DetailItem(
+          Icons.person_outline,
+          'Gender',
+          _capitalize(parfum.gender!),
+        ),
+      if (parfum.price != null)
+        _DetailItem(Icons.attach_money, 'Price', '\$${parfum.price}'),
+      if (parfum.oilType != null)
+        _DetailItem(Icons.water_drop_outlined, 'Oil Type', parfum.oilType!),
+      if (parfum.longevity != null)
+        _DetailItem(Icons.timelapse, 'Longevity', parfum.longevity!),
+      if (parfum.sillage != null)
+        _DetailItem(Icons.air, 'Sillage', parfum.sillage!),
     ];
 
     if (details.isEmpty) {
@@ -133,11 +152,18 @@ class PerfumeDetailSheet extends StatelessWidget {
             children: [
               Text(
                 item.label,
-                style: TextStyle(fontSize: 11, color: Colors.grey[500], fontWeight: FontWeight.w500),
+                style: TextStyle(
+                  fontSize: 11,
+                  color: Colors.grey[500],
+                  fontWeight: FontWeight.w500,
+                ),
               ),
               Text(
                 item.value,
-                style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
+                style: const TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w600,
+                ),
               ),
             ],
           ),

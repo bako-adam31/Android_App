@@ -6,7 +6,7 @@ import 'suggestions_screen.dart';
 import 'profile_screen.dart';
 
 class MainNavigation extends StatefulWidget {
-  const MainNavigation({Key? key}) : super(key: key);
+  const MainNavigation({super.key});
 
   @override
   State<MainNavigation> createState() => _MainNavigationState();
@@ -15,7 +15,7 @@ class MainNavigation extends StatefulWidget {
 class _MainNavigationState extends State<MainNavigation> {
   int _currentIndex = 0;
   final FavoritesManager _favoritesManager = FavoritesManager();
-/*
+  /*
   final List<Widget> _screens = [
     const HomeScreen(),
     const FinderScreen(),
@@ -25,7 +25,7 @@ class _MainNavigationState extends State<MainNavigation> {
  */
 
   @override
-  void initState(){
+  void initState() {
     super.initState();
     _favoritesManager.load();
   }
@@ -36,7 +36,6 @@ class _MainNavigationState extends State<MainNavigation> {
     super.dispose();
   }
 
-
   @override
   Widget build(BuildContext context) {
     final screens = [
@@ -46,10 +45,7 @@ class _MainNavigationState extends State<MainNavigation> {
       ProfileScreen(favoritesManager: _favoritesManager),
     ];
     return Scaffold(
-      body: IndexedStack(
-        index: _currentIndex,
-        children: screens,
-      ),
+      body: IndexedStack(index: _currentIndex, children: screens),
 
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _currentIndex,

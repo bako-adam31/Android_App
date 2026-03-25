@@ -111,4 +111,21 @@ class AccordCategories {
     smoky,
     amber,
   ];
+
+  static AccordCategory? byId(String? value) {
+    if (value == null) return null;
+
+    final normalized = value.trim().toLowerCase();
+    if (normalized.isEmpty) return null;
+
+    for (final category in all) {
+      if (category.id == normalized ||
+          category.apiAccord == normalized ||
+          category.label.toLowerCase() == normalized) {
+        return category;
+      }
+    }
+
+    return null;
+  }
 }

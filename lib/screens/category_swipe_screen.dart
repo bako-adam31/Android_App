@@ -10,10 +10,10 @@ class CategorySwipeScreen extends StatefulWidget {
   final FavoritesManager favoritesManager;
 
   const CategorySwipeScreen({
-    Key? key,
+    super.key,
     required this.category,
     required this.favoritesManager,
-  }) : super(key: key);
+  });
 
   @override
   State<CategorySwipeScreen> createState() => _CategorySwipeScreenState();
@@ -262,7 +262,11 @@ class _CategorySwipeScreenState extends State<CategorySwipeScreen>
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(Icons.check_circle_outline, size: 64, color: Colors.grey),
+            const Icon(
+              Icons.check_circle_outline,
+              size: 64,
+              color: Colors.grey,
+            ),
             const SizedBox(height: 16),
             Text(
               'No more ${widget.category.label} suggestions',
@@ -347,7 +351,7 @@ class _CategorySwipeScreenState extends State<CategorySwipeScreen>
           shape: BoxShape.circle,
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.1),
+              color: Colors.black.withValues(alpha: 0.1),
               blurRadius: 10,
               offset: const Offset(0, 4),
             ),
@@ -376,15 +380,19 @@ class _CategorySwipeScreenState extends State<CategorySwipeScreen>
                 Positioned.fill(
                   child: Container(
                     decoration: BoxDecoration(
-                      color: Colors.red.withOpacity(
-                        (-swipeProgress * 0.4).clamp(0, 0.4),
+                      color: Colors.red.withValues(
+                        alpha: (-swipeProgress * 0.4).clamp(0, 0.4),
                       ),
                       borderRadius: BorderRadius.circular(24),
                     ),
                     alignment: Alignment.center,
                     child: Opacity(
                       opacity: (-swipeProgress).clamp(0, 1),
-                      child: const Icon(Icons.close, color: Colors.white, size: 80),
+                      child: const Icon(
+                        Icons.close,
+                        color: Colors.white,
+                        size: 80,
+                      ),
                     ),
                   ),
                 ),
@@ -392,15 +400,19 @@ class _CategorySwipeScreenState extends State<CategorySwipeScreen>
                 Positioned.fill(
                   child: Container(
                     decoration: BoxDecoration(
-                      color: Colors.green.withOpacity(
-                        (swipeProgress * 0.4).clamp(0, 0.4),
+                      color: Colors.green.withValues(
+                        alpha: (swipeProgress * 0.4).clamp(0, 0.4),
                       ),
                       borderRadius: BorderRadius.circular(24),
                     ),
                     alignment: Alignment.center,
                     child: Opacity(
                       opacity: swipeProgress.clamp(0, 1),
-                      child: const Icon(Icons.favorite, color: Colors.white, size: 80),
+                      child: const Icon(
+                        Icons.favorite,
+                        color: Colors.white,
+                        size: 80,
+                      ),
                     ),
                   ),
                 ),
@@ -420,7 +432,7 @@ class _CategorySwipeScreenState extends State<CategorySwipeScreen>
         borderRadius: BorderRadius.circular(24),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.08),
+            color: Colors.black.withValues(alpha: 0.08),
             blurRadius: 20,
             offset: const Offset(0, 8),
           ),
@@ -432,13 +444,16 @@ class _CategorySwipeScreenState extends State<CategorySwipeScreen>
           Expanded(
             flex: 4,
             child: ClipRRect(
-              borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+              borderRadius: const BorderRadius.vertical(
+                top: Radius.circular(24),
+              ),
               child: parfum.imageUrl != null && parfum.imageUrl!.isNotEmpty
                   ? Image.network(
-                parfum.imageUrl!,
-                fit: BoxFit.cover,
-                errorBuilder: (_, __, ___) => const _FallbackImage(),
-              )
+                      parfum.imageUrl!,
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) =>
+                          const _FallbackImage(),
+                    )
                   : const _FallbackImage(),
             ),
           ),

@@ -5,30 +5,25 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'firebase_options.dart';
 
 import 'screens/welcome_screen.dart';
-import 'screens/home_screen.dart';
 import 'screens/main_navigation.dart';
 
 void main() async {
   //initialized before calling Firebase
   WidgetsFlutterBinding.ensureInitialized();
 
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
   runApp(const SharqiApp());
 }
 
 class SharqiApp extends StatelessWidget {
-  const SharqiApp({Key? key}) : super(key: key);
+  const SharqiApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Sharqi',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
+      theme: ThemeData(primarySwatch: Colors.blue),
       //login/logout events automatically
       home: StreamBuilder<User?>(
         stream: FirebaseAuth.instance.authStateChanges(),

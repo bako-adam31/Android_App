@@ -9,8 +9,9 @@ import 'suggestions_seen_service.dart';
 
 List<Parfum> _filterAndRankPerfumes(Map<String, dynamic> args) {
   final List<dynamic> rawJsonList = args['perfumes'];
-  final Set<String> selectedNotes =
-  Set<String>.from(args['selectedNotes'] as Set);
+  final Set<String> selectedNotes = Set<String>.from(
+    args['selectedNotes'] as Set,
+  );
 
   final List<Parfum> allPerfumes = rawJsonList
       .map((e) => Parfum.fromJson(Map<String, dynamic>.from(e)))
@@ -22,8 +23,8 @@ List<Parfum> _filterAndRankPerfumes(Map<String, dynamic> args) {
     int score = 0;
 
     final combinedNotes =
-    '${parfum.topNotes ?? ''} ${parfum.middleNotes ?? ''} ${parfum.baseNotes ?? ''} ${parfum.mainAccords ?? ''}'
-        .toLowerCase();
+        '${parfum.topNotes ?? ''} ${parfum.middleNotes ?? ''} ${parfum.baseNotes ?? ''} ${parfum.mainAccords ?? ''}'
+            .toLowerCase();
 
     for (final note in selectedNotes) {
       if (combinedNotes.contains(note.toLowerCase())) {
@@ -32,15 +33,12 @@ List<Parfum> _filterAndRankPerfumes(Map<String, dynamic> args) {
     }
 
     if (score > 0) {
-      scoredPerfumes.add({
-        'parfum': parfum,
-        'score': score,
-      });
+      scoredPerfumes.add({'parfum': parfum, 'score': score});
     }
   }
 
   scoredPerfumes.sort(
-        (a, b) => (b['score'] as int).compareTo(a['score'] as int),
+    (a, b) => (b['score'] as int).compareTo(a['score'] as int),
   );
 
   return scoredPerfumes.map((e) => e['parfum'] as Parfum).toList();
@@ -50,10 +48,7 @@ class CategoryFeedResult {
   final List<Parfum> perfumes;
   final bool exhausted;
 
-  const CategoryFeedResult({
-    required this.perfumes,
-    required this.exhausted,
-  });
+  const CategoryFeedResult({required this.perfumes, required this.exhausted});
 }
 
 class DataRepository {
@@ -85,15 +80,17 @@ class DataRepository {
     }
 
     try {
-      final apiResponse =
-      await _apiService.getFragrancesByBrand('Tom Ford', limit: 10);
+      final apiResponse = await _apiService.getFragrancesByBrand(
+        'Tom Ford',
+        limit: 10,
+      );
 
       final tomFordOnly = apiResponse
           .map((item) => Map<String, dynamic>.from(item))
           .where(
             (item) =>
-        (item['Brand'] ?? '').toString().toLowerCase() == 'tom ford',
-      )
+                (item['Brand'] ?? '').toString().toLowerCase() == 'tom ford',
+          )
           .take(4)
           .toList();
 
@@ -120,15 +117,17 @@ class DataRepository {
     }
 
     try {
-      final apiResponse =
-      await _apiService.getFragrancesByBrand('Lattafa', limit: 10);
+      final apiResponse = await _apiService.getFragrancesByBrand(
+        'Lattafa',
+        limit: 10,
+      );
 
       final lattafaOnly = apiResponse
           .map((item) => Map<String, dynamic>.from(item))
           .where(
             (item) =>
-        (item['Brand'] ?? '').toString().toLowerCase() == 'lattafa',
-      )
+                (item['Brand'] ?? '').toString().toLowerCase() == 'lattafa',
+          )
           .take(10)
           .toList();
 
@@ -185,7 +184,9 @@ class DataRepository {
   }) async {
     final prefs = await SharedPreferences.getInstance();
     final seenIds = await _seenService.getSeenIds(category.seenKey);
-    final favoriteIds = favoritesManager.favorites.map((e) => e.stableKey).toSet();
+    final favoriteIds = favoritesManager.favorites
+        .map((e) => e.stableKey)
+        .toSet();
 
     final excludedKeys = <String>{...seenIds, ...favoriteIds};
     final collected = <Parfum>[];

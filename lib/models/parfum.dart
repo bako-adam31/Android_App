@@ -62,14 +62,14 @@ class Parfum {
     if (value is List) {
       final names = value
           .map((item) {
-        if (item is Map<String, dynamic>) {
-          return item['name']?.toString().trim();
-        }
-        if (item is Map) {
-          return item['name']?.toString().trim();
-        }
-        return item?.toString().trim();
-      })
+            if (item is Map<String, dynamic>) {
+              return item['name']?.toString().trim();
+            }
+            if (item is Map) {
+              return item['name']?.toString().trim();
+            }
+            return item?.toString().trim();
+          })
           .where((e) => e != null && e.isNotEmpty)
           .cast<String>()
           .toList();
@@ -91,7 +91,8 @@ class Parfum {
     }
 
     return Parfum(
-      id: _parseSimple(json['perfumeId']) ??
+      id:
+          _parseSimple(json['perfumeId']) ??
           _parseSimple(json['id']) ??
           _parseSimple(json['_id']) ??
           _parseSimple(json['ID']),
@@ -107,11 +108,13 @@ class Parfum {
       sillage: _parseSimple(json['Sillage']),
       popularity: _parseSimple(json['Popularity']),
       topNotes:
-      _parseNotesArray(notesMap['Top']) ?? _parseSimple(json['Top Notes']),
-      middleNotes: _parseNotesArray(notesMap['Middle']) ??
+          _parseNotesArray(notesMap['Top']) ?? _parseSimple(json['Top Notes']),
+      middleNotes:
+          _parseNotesArray(notesMap['Middle']) ??
           _parseSimple(json['Middle Notes']),
       baseNotes:
-      _parseNotesArray(notesMap['Base']) ?? _parseSimple(json['Base Notes']),
+          _parseNotesArray(notesMap['Base']) ??
+          _parseSimple(json['Base Notes']),
       mainAccords: _parseSimple(json['Main Accords']),
     );
   }
@@ -135,6 +138,19 @@ class Parfum {
       'Middle Notes': middleNotes,
       'Base Notes': baseNotes,
       'Main Accords': mainAccords,
+    };
+  }
+
+  Map<String, dynamic> toProfileSignatureJson() {
+    return {
+      'perfumeId': id,
+      'name': name,
+      'brand': brand,
+      'imageUrl': imageUrl,
+      'gender': gender,
+      'rating': rating,
+      'year': year,
+      'mainAccords': mainAccords,
     };
   }
 
