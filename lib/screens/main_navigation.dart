@@ -39,7 +39,10 @@ class _MainNavigationState extends State<MainNavigation> {
   @override
   Widget build(BuildContext context) {
     final screens = [
-      HomeScreen(favoritesManager: _favoritesManager),
+      HomeScreen(
+        favoritesManager: _favoritesManager,
+        isActive: _currentIndex == 0,
+      ),
       FinderScreen(favoritesManager: _favoritesManager),
       SuggestionsScreen(favoritesManager: _favoritesManager),
       ProfileScreen(favoritesManager: _favoritesManager),

@@ -56,6 +56,7 @@ class DataRepository {
   final SuggestionsSeenService _seenService = SuggestionsSeenService();
 
   static const String _tomFordCacheKey = 'cached_tom_ford_data_v2';
+  static const String _homeAccordCacheKeyPrefix = 'cached_home_accord_';
   static const String _lattafaKey = 'cached_lattafa_data';
   static const String _finderCacheKey = 'cached_finder_brands_v2';
 
@@ -69,6 +70,15 @@ class DataRepository {
   ];
 
   Future<List<Parfum>> getTomFordFragrances() async {
+    try {
+      return await getTomFordRecommendations(limit: 4);
+    } catch (e) {
+      debugPrint('Error fetching Tom Ford data: $e');
+      return [];
+    }
+  }
+
+  Future<List<Parfum>> getTomFordRecommendations({int limit = 4}) async {
     final prefs = await SharedPreferences.getInstance();
 
     final cachedData = prefs.getString(_tomFordCacheKey);
@@ -76,33 +86,61 @@ class DataRepository {
       final List<dynamic> decodedJson = json.decode(cachedData);
       return decodedJson
           .map((item) => Parfum.fromJson(Map<String, dynamic>.from(item)))
+          .take(limit)
           .toList();
     }
 
-    try {
-      final apiResponse = await _apiService.getFragrancesByBrand(
-        'Tom Ford',
-        limit: 10,
-      );
+    final apiResponse = await _apiService.getFragrancesByBrand(
+      'Tom Ford',
+      limit: 10,
+    );
 
-      final tomFordOnly = apiResponse
-          .map((item) => Map<String, dynamic>.from(item))
-          .where(
-            (item) =>
-                (item['Brand'] ?? '').toString().toLowerCase() == 'tom ford',
-          )
-          .take(4)
-          .toList();
+    final tomFordOnly = apiResponse
+        .map((item) => Map<String, dynamic>.from(item))
+        .where(
+          (item) =>
+              (item['Brand'] ?? '').toString().toLowerCase() == 'tom ford',
+        )
+        .take(limit)
+        .toList();
 
-      if (tomFordOnly.isNotEmpty) {
-        await prefs.setString(_tomFordCacheKey, json.encode(tomFordOnly));
-      }
-
-      return tomFordOnly.map((item) => Parfum.fromJson(item)).toList();
-    } catch (e) {
-      debugPrint('Error fetching Tom Ford data: $e');
-      return [];
+    if (tomFordOnly.isNotEmpty) {
+      await prefs.setString(_tomFordCacheKey, json.encode(tomFordOnly));
     }
+
+    return tomFordOnly.map((item) => Parfum.fromJson(item)).toList();
+  }
+
+  Future<List<Parfum>> getAccordRecommendations({
+    required AccordCategory category,
+    int limit = 4,
+  }) async {
+    final prefs = await SharedPreferences.getInstance();
+    final cacheKey = '$_homeAccordCacheKeyPrefix${category.id}_$limit';
+    final cachedData = prefs.getString(cacheKey);
+
+    if (cachedData != null) {
+      final List<dynamic> decodedJson = json.decode(cachedData);
+      return decodedJson
+          .map((item) => Parfum.fromJson(Map<String, dynamic>.from(item)))
+          .take(limit)
+          .toList();
+    }
+
+    final apiResponse = await _apiService.getMatchedFragrances(
+      accords: '${category.apiAccord}:100',
+      limit: limit,
+    );
+    final recommendations = apiResponse
+        .map((item) => Map<String, dynamic>.from(item))
+        .take(limit)
+        .toList();
+
+    if (recommendations.isNotEmpty) {
+      await prefs.setString(cacheKey, json.encode(recommendations));
+    }
+
+    return recommendations.map((item) => Parfum.fromJson(item)).toList();
   }
 
   Future<List<Parfum>> getLattafaSuggestions() async {

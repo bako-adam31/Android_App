@@ -3,10 +3,63 @@ import '../models/accord_category.dart';
 import '../services/favorites_manager.dart';
 import 'category_swipe_screen.dart';
 
-class SuggestionsScreen extends StatelessWidget {
+class SuggestionsScreen extends StatefulWidget {
   final FavoritesManager favoritesManager;
+  final AccordCategory? initialCategory;
 
-  const SuggestionsScreen({super.key, required this.favoritesManager});
+  const SuggestionsScreen({
+    super.key,
+    required this.favoritesManager,
+    this.initialCategory,
+  });
+
+  @override
+  State<SuggestionsScreen> createState() => _SuggestionsScreenState();
+}
+
+class _SuggestionsScreenState extends State<SuggestionsScreen> {
+  bool _didOpenInitialCategory = false;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _openInitialCategoryIfNeeded();
+    });
+  }
+
+  @override
+  void didUpdateWidget(covariant SuggestionsScreen oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.initialCategory != widget.initialCategory) {
+      _didOpenInitialCategory = false;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _openInitialCategoryIfNeeded();
+      });
+    }
+  }
+
+  void _openInitialCategoryIfNeeded() {
+    final initialCategory = widget.initialCategory;
+    if (!mounted || _didOpenInitialCategory || initialCategory == null) {
+      return;
+    }
+
+    _didOpenInitialCategory = true;
+    _openCategory(initialCategory);
+  }
+
+  void _openCategory(AccordCategory category) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => CategorySwipeScreen(
+          category: category,
+          favoritesManager: widget.favoritesManager,
+        ),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -31,17 +84,7 @@ class SuggestionsScreen extends StatelessWidget {
           final category = categories[index];
 
           return GestureDetector(
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (_) => CategorySwipeScreen(
-                    category: category,
-                    favoritesManager: favoritesManager,
-                  ),
-                ),
-              );
-            },
+            onTap: () => _openCategory(category),
             child: Container(
               margin: const EdgeInsets.only(bottom: 16),
               padding: const EdgeInsets.all(24),
