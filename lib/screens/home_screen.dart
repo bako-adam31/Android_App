@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import '../models/accord_category.dart';
 import '../models/parfum.dart';
 import '../models/perfume_details.dart';
+import '../services/api_service.dart';
 import '../services/data_repository.dart';
 import '../services/favorites_manager.dart';
 import '../services/perfume_repository.dart';
@@ -64,33 +65,45 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<_ForYouRecommendations> _loadForYouRecommendations() async {
-    final profile = await _profileRepository.getMyProfile();
-    final favoriteAccord = profile.favoriteAccord;
+    try {
+      final profile = await _profileRepository.getMyProfile();
+      final favoriteAccord = profile.favoriteAccord;
 
-    if (favoriteAccord != null) {
-      final accordPerfumes = await _repository.getAccordRecommendations(
-        category: favoriteAccord,
+      if (favoriteAccord != null) {
+        final accordPerfumes = await _repository.getAccordRecommendations(
+          category: favoriteAccord,
+          limit: 4,
+        );
+
+        if (accordPerfumes.isNotEmpty) {
+          return _ForYouRecommendations(
+            perfumes: accordPerfumes,
+            favoriteAccord: favoriteAccord,
+            usedFallback: false,
+          );
+        }
+      }
+
+      final fallbackPerfumes = await _repository.getTomFordRecommendations(
         limit: 4,
       );
 
-      if (accordPerfumes.isNotEmpty) {
-        return _ForYouRecommendations(
-          perfumes: accordPerfumes,
-          favoriteAccord: favoriteAccord,
-          usedFallback: false,
-        );
-      }
+      return _ForYouRecommendations(
+        perfumes: fallbackPerfumes,
+        favoriteAccord: favoriteAccord,
+        usedFallback: true,
+      );
+    } catch (_) {
+      final fallbackPerfumes = await _repository.getTomFordRecommendations(
+        limit: 4,
+      );
+
+      return _ForYouRecommendations(
+        perfumes: fallbackPerfumes,
+        favoriteAccord: null,
+        usedFallback: true,
+      );
     }
-
-    final fallbackPerfumes = await _repository.getTomFordRecommendations(
-      limit: 4,
-    );
-
-    return _ForYouRecommendations(
-      perfumes: fallbackPerfumes,
-      favoriteAccord: favoriteAccord,
-      usedFallback: true,
-    );
   }
 
   Future<void> _handleRefresh() async {
@@ -384,9 +397,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildForYouSection(AsyncSnapshot<_ForYouRecommendations> snapshot) {
-    final subtitle =
-        snapshot.data?.subtitle ??
-        'Personalized recommendations powered by your saved profile.';
+    final subtitle = snapshot.data?.subtitle ?? _forYouSubtitle(snapshot);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -443,6 +454,15 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
       ],
     );
+  }
+
+  String _forYouSubtitle(AsyncSnapshot<_ForYouRecommendations> snapshot) {
+    final error = snapshot.error;
+    if (error is FragranceApiException && error.statusCode == 403) {
+      return 'For You is waiting on a valid fragrance API key.';
+    }
+
+    return 'Personalized recommendations powered by your saved profile.';
   }
 }
 

@@ -36,7 +36,7 @@ const normalizeNullableString = (value) => {
     }
 
     const normalized = String(value).trim();
-    return normalized.isEmpty ? null : normalized;
+    return normalized.length === 0 ? null : normalized;
 };
 
 const normalizeBio = (value) => {

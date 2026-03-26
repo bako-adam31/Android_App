@@ -18,7 +18,7 @@ const authMiddleware = async (req, res, next) => {
             });
         }
 
-        const idToken = authHeader.split('Bearer ')[1]?.trim();
+        const idToken = authHeader.substring('Bearer '.length).trim();
 
         if (!idToken) {
             return res.status(401).json({
@@ -37,6 +37,12 @@ const authMiddleware = async (req, res, next) => {
 
         next();
     } catch (error) {
+        console.error('Firebase token verification failed', {
+            code: error.code,
+            message: error.message,
+            projectId: process.env.FIREBASE_PROJECT_ID
+        });
+
         return res.status(401).json({
             success: false,
             message: 'Invalid or expired Firebase ID token'

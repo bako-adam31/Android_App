@@ -4,7 +4,7 @@ import 'package:flutter/foundation.dart';
 class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
-  // Sign Up with Email, Password, and Username
+  // Sign Up
   Future<User?> signUp(String email, String password, String username) async {
     final credential = await FirebaseAuth.instance
         .createUserWithEmailAndPassword(email: email, password: password);

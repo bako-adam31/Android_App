@@ -1,9 +1,24 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
+class FragranceApiException implements Exception {
+  final String message;
+  final int? statusCode;
+
+  const FragranceApiException(this.message, {this.statusCode});
+
+  @override
+  String toString() =>
+      'FragranceApiException(statusCode: $statusCode, message: $message)';
+}
+
 class ApiService {
-  static const String _apiKey =
+  static const String _fallbackApiKey =
       'fd8094dfde51e2499d3f92a850057230d6bc59e890a431e31cd42997c55e4930';
+  static const String _apiKey = String.fromEnvironment(
+    'FRAGELLA_API_KEY',
+    defaultValue: _fallbackApiKey,
+  );
   static const String _baseUrl = 'https://api.fragella.com/api/v1';
 
   Future<List<dynamic>> getFragrancesByBrand(
@@ -18,11 +33,10 @@ class ApiService {
       headers: {'x-api-key': _apiKey, 'Accept': 'application/json'},
     );
 
-    if (response.statusCode != 200) {
-      throw Exception(
-        'Failed to load fragrances: ${response.statusCode} ${response.body}',
-      );
-    }
+    _throwIfRequestFailed(
+      response,
+      fallbackMessage: 'Failed to load fragrances',
+    );
 
     return _extractList(response.body);
   }
@@ -38,11 +52,10 @@ class ApiService {
       headers: {'x-api-key': _apiKey, 'Accept': 'application/json'},
     );
 
-    if (response.statusCode != 200) {
-      throw Exception(
-        'Failed to search fragrances: ${response.statusCode} ${response.body}',
-      );
-    }
+    _throwIfRequestFailed(
+      response,
+      fallbackMessage: 'Failed to search fragrances',
+    );
 
     return _extractList(response.body);
   }
@@ -60,13 +73,33 @@ class ApiService {
       headers: {'x-api-key': _apiKey, 'Accept': 'application/json'},
     );
 
-    if (response.statusCode != 200) {
-      throw Exception(
-        'Failed to fetch matched fragrances: ${response.statusCode} ${response.body}',
+    _throwIfRequestFailed(
+      response,
+      fallbackMessage: 'Failed to fetch matched fragrances',
+    );
+
+    return _extractList(response.body);
+  }
+
+  void _throwIfRequestFailed(
+    http.Response response, {
+    required String fallbackMessage,
+  }) {
+    if (response.statusCode == 200) {
+      return;
+    }
+
+    if (response.statusCode == 401 || response.statusCode == 403) {
+      throw const FragranceApiException(
+        'Fragrance API access was denied. Set a valid FRAGELLA_API_KEY with --dart-define and try again.',
+        statusCode: 403,
       );
     }
 
-    return _extractList(response.body);
+    throw FragranceApiException(
+      '$fallbackMessage: ${response.statusCode} ${response.body}',
+      statusCode: response.statusCode,
+    );
   }
 
   List<dynamic> _extractList(String rawBody) {

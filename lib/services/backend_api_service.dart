@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
@@ -11,36 +10,18 @@ class BackendApiException implements Exception {
   const BackendApiException(this.message, {this.statusCode});
 
   @override
-  String toString() =>
-      'BackendApiException(statusCode: $statusCode, message: $message)';
+  String toString() => 'BackendApiException($statusCode): $message';
 }
 
 class BackendApiService {
   BackendApiService({http.Client? client}) : _client = client ?? http.Client();
 
-  static const String _defaultBaseUrl = 'http://localhost:5000/api';
-  static const String _configuredBaseUrl = String.fromEnvironment(
+  static const String _baseUrl = String.fromEnvironment(
     'BACKEND_BASE_URL',
-    defaultValue: _defaultBaseUrl,
+    defaultValue: 'http://10.0.2.2:5001/api',
   );
 
   final http.Client _client;
-
-  String get _baseUrl {
-    if (_configuredBaseUrl != _defaultBaseUrl) {
-      return _configuredBaseUrl;
-    }
-
-    if (kIsWeb) {
-      return _configuredBaseUrl;
-    }
-
-    if (defaultTargetPlatform == TargetPlatform.android) {
-      return 'http://10.0.2.2:5000/api';
-    }
-
-    return _configuredBaseUrl;
-  }
 
   Future<Map<String, dynamic>> get(String path) {
     return _sendRequest(method: 'GET', path: path);
@@ -57,79 +38,82 @@ class BackendApiService {
   }) async {
     final user = FirebaseAuth.instance.currentUser;
     if (user == null) {
-      throw const BackendApiException('You must be logged in to continue.');
-    }
-
-    final idToken = await user.getIdToken();
-    if (idToken == null || idToken.trim().isEmpty) {
-      throw const BackendApiException('Could not retrieve an auth token.');
+      throw const BackendApiException('No logged-in user');
     }
 
     final uri = Uri.parse('$_baseUrl$path');
-    final headers = {
-      'Accept': 'application/json',
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer $idToken',
-    };
 
-    late final http.Response response;
-
-    switch (method) {
-      case 'GET':
-        response = await _client.get(uri, headers: headers);
-        break;
-      case 'PUT':
-        response = await _client.put(
-          uri,
-          headers: headers,
-          body: json.encode(body ?? <String, dynamic>{}),
-        );
-        break;
-      default:
-        throw BackendApiException('Unsupported HTTP method: $method');
+    if (kDebugMode) {
+      debugPrint('API $method $uri');
+      debugPrint('Firebase UID: ${user.uid}');
     }
 
-    final decoded = _decodeJson(response.body);
+    var response = await _authorizedRequest(
+      user: user,
+      uri: uri,
+      method: method,
+      body: body,
+      forceRefresh: false,
+    );
 
-    if (response.statusCode < 200 || response.statusCode >= 300) {
-      throw BackendApiException(
-        _extractMessage(decoded) ??
-            'Request failed with status ${response.statusCode}.',
-        statusCode: response.statusCode,
+    if (response.statusCode == 401 || response.statusCode == 403) {
+      if (kDebugMode) {
+        debugPrint('Retrying with fresh Firebase token');
+      }
+
+      response = await _authorizedRequest(
+        user: user,
+        uri: uri,
+        method: method,
+        body: body,
+        forceRefresh: true,
       );
     }
 
-    if (decoded is Map<String, dynamic>) {
-      return decoded;
+    final decoded = response.body.trim().isEmpty
+        ? <String, dynamic>{}
+        : json.decode(response.body);
+
+    if (response.statusCode < 200 || response.statusCode >= 300) {
+      final message = decoded is Map<String, dynamic>
+          ? (decoded['message']?.toString() ?? 'Request failed')
+          : 'Request failed';
+      throw BackendApiException(message, statusCode: response.statusCode);
     }
 
-    if (decoded is Map) {
-      return Map<String, dynamic>.from(decoded);
-    }
-
-    throw const BackendApiException('Unexpected backend response format.');
+    return Map<String, dynamic>.from(decoded as Map);
   }
 
-  dynamic _decodeJson(String body) {
-    if (body.trim().isEmpty) {
-      return <String, dynamic>{};
+  Future<http.Response> _authorizedRequest({
+    required User user,
+    required Uri uri,
+    required String method,
+    Map<String, dynamic>? body,
+    required bool forceRefresh,
+  }) async {
+    final token = await user.getIdToken(forceRefresh);
+    if (token == null || token.isEmpty) {
+      throw const BackendApiException('Could not get Firebase ID token');
     }
 
-    try {
-      return json.decode(body);
-    } catch (_) {
-      throw const BackendApiException('Backend returned invalid JSON.');
-    }
-  }
+    final headers = {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token',
+    };
 
-  String? _extractMessage(dynamic decoded) {
-    if (decoded is Map) {
-      final message = decoded['message']?.toString().trim();
-      if (message != null && message.isNotEmpty) {
-        return message;
-      }
+    if (method == 'GET') {
+      return _client.get(uri, headers: headers);
     }
 
-    return null;
+    if (method == 'PUT') {
+      return _client.put(
+        uri,
+        headers: headers,
+        body: json.encode(body ?? <String, dynamic>{}),
+      );
+    }
+
+    throw BackendApiException('Unsupported method: $method');
   }
 }

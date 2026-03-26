@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../models/parfum.dart';
 import '../models/accord_category.dart';
+import '../services/api_service.dart';
 import '../services/data_repository.dart';
 import '../services/favorites_manager.dart';
 import 'perfume_detail_sheet.dart';
@@ -83,10 +84,18 @@ class _CategorySwipeScreenState extends State<CategorySwipeScreen>
     } catch (e) {
       if (!mounted) return;
       setState(() {
-        _error = e.toString();
+        _error = _buildErrorMessage(e);
         _isLoading = false;
       });
     }
+  }
+
+  String _buildErrorMessage(Object error) {
+    if (error is FragranceApiException && error.statusCode == 403) {
+      return 'Fragrance API access was denied. Start the app with a valid FRAGELLA_API_KEY dart define.';
+    }
+
+    return error.toString();
   }
 
   Future<CategoryFeedResult> _fetchBatch() {
