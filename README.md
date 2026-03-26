@@ -1,56 +1,100 @@
-# Fragrance App 💎
+# 🌙 Sharqi – Fragrance Recommendation App
 
-A modern, interactive Android fragrance discovery application built with Flutter, Firebase, and a custom Node.js backend. 
+Sharqi is a modern mobile application built with Flutter that helps users discover perfumes through personalized recommendations, intelligent filtering, and an interactive swipe-based experience.
 
----
-
-## 🚀 Overview
-
-This application redefines how users discover perfumes by providing an engaging, personalized, and intuitive experience. By combining modern UI paradigms with smart filtering, the app acts as a digital scent consultant.
-
-The system architecture leverages **Firebase Authentication** for secure access, a **custom Node.js backend** for logic processing, and an external fragrance API to deliver a rich database of perfumes.
+The app combines real-time API data, a custom backend, and a clean architecture to deliver a smooth and scalable user experience.
 
 ---
 
-## ✨ Key Features
+## 🚀 Features
 
-### 🏠 Home Dashboard
-* **Curated Collections:** Browse fragrances by specialized categories such as Niche, Designer, Gourmand, and Citrusy.
-* **Daily Spotlights:** Get personalized daily suggestions (e.g., highlighting specific brands like Tom Ford).
-* **History Tracking:** Quickly access recently viewed perfumes.
+- 🔐 **Authentication**
+  - Firebase Authentication (Email & Password)
+  - Auth state-based navigation
 
-### 🔥 Interactive Suggestions (Tinder-Style)
-* **Engaging Discovery:** Swipe right to save a perfume to your favorites, or swipe left to skip.
-* **Fluid UI/UX:** Features smooth, interactive card animations.
-* **Targeted Swiping:** Filter your swipe queue based on specific fragrance categories.
+- 🔎 **Search**
+  - Real-time perfume search with debounce
+  - Detailed perfume pages with full information
 
-### 🔎 Smart Fragrance Finder
-* **Note-Based Search:** A multi-step selection process allowing users to choose preferred base, heart, and top notes (e.g., Citrus, Fruity, Oriental).
-* **Intelligent Matching:** Finds and recommends perfumes that align with the selected notes.
-* **Similarity Ranking:** Results are ranked dynamically based on note similarity rather than strict exact matches, providing better recommendations.
+- 🎯 **Personalized Recommendations**
+  - "For You" section based on user preferences
+  - Fallback logic when no personalized data is available
 
-### ❤️ Persistent Favorites System
-* **Personalized Library:** Users can manage their own curated list of favorite scents.
-* **Cloud Synchronization:** Favorites are securely synced via the custom backend using the user's Firebase UID, ensuring data persists across app restarts and multiple devices.
+- 🔥 **Swipe Suggestions**
+  - Tinder-like swipe system
+  - Swipe right → add to favorites  
+  - Swipe left → skip
+  - Smart filtering:
+    - removes seen items
+    - excludes favorites
+    - uses fallback levels (100 → 90 → 80)
 
-### 👤 Secure Authentication
-* **Powered by Firebase:** Reliable and secure user registration and login flows.
-* **UID Integration:** Seamlessly connects the authenticated user's Firebase UID with the custom Node.js database operations.
+- 🧠 **Finder (Smart Wizard)**
+  - Multi-step note selection (citrus, woody, sweet, etc.)
+  - Ranking system based on note matching
+
+- 👤 **User Profile**
+  - Editable bio, gender, favorite accord
+  - Signature fragrance selection via search
+  - Stored via custom backend (Firestore)
+
+- ❤️ **Favorites**
+  - Add/remove perfumes
+  - Stored locally using SharedPreferences
+  - Synced across screens
 
 ---
 
-## 🏗️ System Architecture
+## 🏗️ Architecture
 
-The application follows a clean, decoupled client-server architecture:
+The project follows a clean and scalable structure:
 
-```text
-📱 Flutter Client App
-        │
-        ├── Authenticates ──➔ 🔐 Firebase Auth
-        │
-        └── API Requests (w/ UID token)
-                │
-                ▼
-⚙️ Node.js Backend (Express)
-        │
-        └── Reads/Writes ──➔ 🗄️ Firestore Database
+- `models/` – data models  
+- `services/` – API and business logic  
+- `screens/` – UI and user interaction  
+
+Key principles:
+- Separation of concerns  
+- Repository pattern  
+- Service-based API handling  
+
+---
+
+## 🌐 Backend
+
+Custom backend built with:
+- Node.js + Express
+- Firebase Admin SDK
+- Firestore
+
+Features:
+- Authenticated API using Firebase ID tokens
+- Profile management
+- Favorites handling
+
+---
+
+## ⚡ Performance & Optimization
+
+- Debounced search input
+- Local caching with SharedPreferences
+- Background processing using `compute()`
+- Efficient swipe rendering (minimal rebuilds)
+
+---
+
+## 📦 Tech Stack
+
+- Flutter
+- Firebase Auth
+- Node.js + Express
+- Firestore
+- REST API (fragrance data)
+
+---
+
+## 🛠️ Setup
+
+```bash
+flutter pub get
+flutter run
