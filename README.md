@@ -50,7 +50,11 @@ flutter pub get
 # Run the app on a connected device or emulator
 flutter run
 
-##Suggested Code Organization
+
+## Project Structure
+
+### Frontend (Flutter)
+```text
 lib/
 │
 ├── screens/                 # User Interface (UI) widgets and pages
@@ -67,13 +71,14 @@ lib/
     ├── parfum.dart
     ├── profile_details.dart
     └── accord_category.dart
+```
 
+### Backend (Node.js)
+```text
 backend/src/
 │
 ├── controllers/             # Handling HTTP requests and responses
 ├── routes/                  # REST API endpoint definitions
 ├── services/                # Database (Firestore) operations
-└── middleware/              # Authentication (auth.js) and error handling
-
-
-
+└── middleware/              # Authentication and error handling
+```
