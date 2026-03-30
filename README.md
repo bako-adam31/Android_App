@@ -1,100 +1,79 @@
-# 🌙 Sharqi – Fragrance Recommendation App
+# Android Project
 
-Sharqi is a modern mobile application built with Flutter that helps users discover perfumes through personalized recommendations, intelligent filtering, and an interactive swipe-based experience.
+## Student Information
+**Name:** Bako Adam-Attila
+**Course:** Android Development
 
-The app combines real-time API data, a custom backend, and a clean architecture to deliver a smooth and scalable user experience.
+## Project Title
+Scent Finder - Perfume Recommendation App
 
----
+## Description
+A modern, cross-platform mobile application built with Flutter that helps users discover their perfect fragrance. The app features an interactive, Tinder-like "Swipe" mechanic where users can rate different fragrance notes (accords) and perfumes. Based on these preferences, the system provides personalized recommendations. The backend is powered by a Node.js/Express REST API and Firebase for secure data storage and user authentication.
 
-## 🚀 Features
+## Features
+- **Interactive Recommendation System:** A swipe-card interface to quickly rate perfumes and fragrance notes (`category_swipe_screen`).
+- **User Authentication:** Secure registration and login using Firebase Authentication (JWT tokens).
+- **Favorites Management:** Users can save their preferred fragrances and view them on their profile.
+- **Search & Filter (Finder):** Browse the perfume database using text search and category filters.
+- **Cloud Synchronization:** Real-time saving of user preferences and profile data to the Firestore database.
 
-- 🔐 **Authentication**
-  - Firebase Authentication (Email & Password)
-  - Auth state-based navigation
+## Technologies Used
+**Frontend (Mobile App):**
+- Flutter SDK (Cross-platform UI framework)
+- Dart Programming Language
+- SharedPreferences (Local state & session storage)
 
-- 🔎 **Search**
-  - Real-time perfume search with debounce
-  - Detailed perfume pages with full information
-
-- 🎯 **Personalized Recommendations**
-  - "For You" section based on user preferences
-  - Fallback logic when no personalized data is available
-
-- 🔥 **Swipe Suggestions**
-  - Tinder-like swipe system
-  - Swipe right → add to favorites  
-  - Swipe left → skip
-  - Smart filtering:
-    - removes seen items
-    - excludes favorites
-    - uses fallback levels (100 → 90 → 80)
-
-- 🧠 **Finder (Smart Wizard)**
-  - Multi-step note selection (citrus, woody, sweet, etc.)
-  - Ranking system based on note matching
-
-- 👤 **User Profile**
-  - Editable bio, gender, favorite accord
-  - Signature fragrance selection via search
-  - Stored via custom backend (Firestore)
-
-- ❤️ **Favorites**
-  - Add/remove perfumes
-  - Stored locally using SharedPreferences
-  - Synced across screens
-
----
-
-## 🏗️ Architecture
-
-The project follows a clean and scalable structure:
-
-- `models/` – data models  
-- `services/` – API and business logic  
-- `screens/` – UI and user interaction  
-
-Key principles:
-- Separation of concerns  
-- Repository pattern  
-- Service-based API handling  
-
----
-
-## 🌐 Backend
-
-Custom backend built with:
-- Node.js + Express
+**Backend (Server):**
+- Node.js & Express.js (REST API framework)
 - Firebase Admin SDK
-- Firestore
 
-Features:
-- Authenticated API using Firebase ID tokens
-- Profile management
-- Favorites handling
+**Database & Cloud:**
+- Google Cloud Firestore (NoSQL Database)
+- Firebase Authentication
 
----
+## How to Run
 
-## ⚡ Performance & Optimization
+To run this project, you need to have the Flutter SDK and Node.js installed on your machine.
 
-- Debounced search input
-- Local caching with SharedPreferences
-- Background processing using `compute()`
-- Efficient swipe rendering (minimal rebuilds)
+## Setup and run the Backend
 
----
+cd backend
+# Install dependencies
+npm install
+# Create a .env file based on backend/.env.example with your Firebase credentials
+# Start the server (defaults to port 3000)
+npm start
 
-## 📦 Tech Stack
-
-- Flutter
-- Firebase Auth
-- Node.js + Express
-- Firestore
-- REST API (fragrance data)
-
----
-
-## 🛠️ Setup
-
-```bash
+##Setup and run the Mobile App (Flutter)
+# Get Flutter dependencies
 flutter pub get
+# Run the app on a connected device or emulator
 flutter run
+
+##Suggested Code Organization
+lib/
+│
+├── screens/                 # User Interface (UI) widgets and pages
+│   ├── home_screen.dart
+│   ├── login_screen.dart
+│   └── category_swipe_screen.dart
+│
+├── services/                # Business logic, API calls, and state management
+│   ├── api_service.dart
+│   ├── auth_service.dart
+│   └── backend_api_service.dart
+│
+└── models/                  # Data classes (JSON serialization)
+    ├── parfum.dart
+    ├── profile_details.dart
+    └── accord_category.dart
+
+backend/src/
+│
+├── controllers/             # Handling HTTP requests and responses
+├── routes/                  # REST API endpoint definitions
+├── services/                # Database (Firestore) operations
+└── middleware/              # Authentication (auth.js) and error handling
+
+
+
