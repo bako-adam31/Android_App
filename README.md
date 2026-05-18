@@ -1,9 +1,5 @@
 # Android Project
 
-## Student Information
-**Name:** Bako Adam-Attila
-**Course:** Android Development
-
 ## Project Title
 Scent Finder - Perfume Recommendation App
 
